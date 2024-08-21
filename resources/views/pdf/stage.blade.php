@@ -36,7 +36,7 @@
         <div class="section">
             <h2>Informations du Stage</h2>
             <div class="info">
-                <p><strong>ID:</strong> {{ $stage->id }}</p>
+                <p><strong>Matricule:</strong> {{ $stage->student->matricule }}</p>
                 <p><strong>Thème:</strong> {{ $stage->theme }}</p>
                 <p><strong>Date de Début:</strong> {{ $stage->start_date }}</p>
                 <p><strong>Date de Fin:</strong> {{ $stage->end_date }}</p>
@@ -46,7 +46,7 @@
         <div class="section">
             <h2>Informations du Partenaire</h2>
             <div class="info">
-                <p><strong>Sigle du Partenaire:</strong> {{ $stage->partenaire->nom }}</p>
+                <p><strong>Nom du Partenaire:</strong> {{ $stage->partenaire->nom }}</p>
                 <p><strong>Email:</strong> {{ $stage->partenaire->email }}</p>
                 <p><strong>Téléphone:</strong> {{ $stage->partenaire->telephone }}</p>
                 <p><strong>Adresse:</strong> {{ $stage->partenaire->adresse }}</p>
@@ -61,6 +61,18 @@
                 <p><strong>Prénom(s) :</strong> {{ $stage->student->Prenoms }}</p>
                 <p><strong>Email:</strong> {{ $stage->student->email }}</p>
                 <p><strong>Téléphone:</strong> {{ $stage->student->Telephone }}</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Informations sur le Département</h2>
+            <div class="info">
+                @if ($stage->student->department)
+                    <p><strong>Nom du Département :</strong> {{ $stage->student->department->nom }}</p>
+                    <p><strong>Description :</strong> {{ $stage->student->department->description }}</p>
+                @else
+                    <p>Aucune information sur le département disponible.</p>
+                @endif
             </div>
         </div>
     </div>

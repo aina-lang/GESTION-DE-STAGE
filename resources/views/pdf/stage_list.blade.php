@@ -8,7 +8,7 @@
             font-family: Arial, sans-serif;
         }
         .container {
-            width: 80%;
+            width: 100%;
             margin: auto;
         }
         h1 {
@@ -42,6 +42,7 @@
                     <th>Thème</th>
                     <th>Date de Début</th>
                     <th>Date de Fin</th>
+                    <th>Département</th> 
                 </tr>
             </thead>
             <tbody>
@@ -53,6 +54,13 @@
                         <td>{{ $stage->theme }}</td>
                         <td>{{ $stage->start_date }}</td>
                         <td>{{ $stage->end_date }}</td>
+                        <td>
+                            @if ($stage->student->department)
+                                {{ $stage->student->department->name }}
+                            @else
+                                Aucun département associé
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
