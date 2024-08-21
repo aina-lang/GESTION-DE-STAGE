@@ -17,30 +17,7 @@
             </div>
             {{-- message --}}
             {!! Toastr::message() !!}
-            <div class="student-group-form">
-                <div class="row">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="rechercher par ID ...">
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="rechercher par telephone ...">
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="rechercher par telephone ...">
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="search-student-btn">
-                            <button type="btn" class="btn btn-primary">rechercher</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
 
             <div class="row">
                 <div class="col-sm-12">
@@ -54,15 +31,15 @@
                                                 <h3 class="page-title">Etudiants</h3>
                                             </div>
                                             <div class="col-auto text-end float-end ms-auto download-grp">
-                                                <a href="{{ route('student/list') }}" class="btn btn-outline-gray me-2 "><i
+                                                {{-- <a href="{{ route('student/list') }}" class="btn btn-outline-gray me-2 "><i
                                                         class="feather-list"></i></a>
                                                 <a href="{{ route('student/grid') }}"
                                                     class="btn btn-outline-gray me-2 active"><i
-                                                        class="feather-grid"></i></a>
+                                                        class="feather-grid"></i></a> --}}
                                                 <a href="#" class="btn btn-outline-primary me-2"><i
                                                         class="fas fa-download"></i> Telecharger</a>
                                                 <a href="{{ route('student/add/page') }}" class="btn btn-primary"><i
-                                                        class="fas fa-plus"></i></a>
+                                                        class="fas fa-plus"></i>Ajouter</a>
                                             </div>
                                         </div>
                                     </div>

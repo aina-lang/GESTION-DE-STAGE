@@ -37,23 +37,34 @@ class HomeController extends Controller
         // $user = User::find(Auth::user()->id);
 
         // Pass the user data to the view
-        return view('dashboard.profile', );
+        return view('dashboard.profile',);
     }
     public function index()
     {
-        $studentCount = Student::count(); 
+        $studentCount = Student::count();
         $partnerCount = Partenaire::count();
         $stageCount = Stage::count();
         $supervisorCount = Teacher::count();
-        
-        return view('dashboard.home', compact('studentCount', 'partnerCount', 'stageCount', 'supervisorCount'));
+
+        // Récupérer tous les stages par département
+        $stagesByDepartment = Stage::with('student', 'department')
+            ->get()
+            ->groupBy('department_id');
+
+        // Récupérer tous les stagiaires par partenaire
+        $stagesByPartner = Stage::with('student', 'partenaire')
+            ->get()
+            ->groupBy('partner_id');
+
+        return view('dashboard.home', compact('studentCount', 'partnerCount', 'stageCount', 'supervisorCount', 'stagesByDepartment', 'stagesByPartner'));
     }
+
     // employee dashboard
     public function emDashboard()
     {
         $dt        = Carbon::now();
         $todayDate = $dt->toDayDateTimeString();
-        return view('dashboard.emdashboard',compact('todayDate'));
+        return view('dashboard.emdashboard', compact('todayDate'));
     }
 
     public function generatePDF(Request $request)

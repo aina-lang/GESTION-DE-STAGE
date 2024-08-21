@@ -64,16 +64,16 @@ Route::controller(LoginController::class)->group(function () {
 Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'register')->name('register');
     Route::post('/register/store', 'storeUser')->name('register.store');
-    Route::get('/register/{id}/edit', 'edit')->name('register.edit'); // Pour afficher le formulaire d'édition
-    Route::post('/register', 'update')->name('register.update'); // Pour traiter la mise à jour
+    Route::get('/register/{id}/edit', 'edit')->name('register.edit');
+    Route::post('/register', 'update')->name('register.update');
 });
 
 // -------------------------- main dashboard ----------------------//
 Route::controller(HomeController::class)->group(function () {
     Route::get('/home', 'index')->middleware('auth')->name('home');
+    Route::get('/', 'index')->middleware('auth')->name('home');
+    Route::get('/dashboard', 'index')->middleware('auth')->name('home');
     Route::get('user/profile/page', 'userProfile')->middleware('auth')->name('user/profile/page');
-    // Route::get('teacher/dashboard', 'teacherDashboardIndex')->middleware('auth')->name('teacher/dashboard');
-    // Route::get('student/dashboard', 'studentDashboardIndex')->middleware('auth')->name('student/dashboard');
 });
 
 
@@ -113,17 +113,22 @@ Route::controller(TeacherController::class)->group(function () {
     Route::get('teacher/list/page', 'teacherList')->middleware('auth')->name('teacher/list/page'); // page teacher
     Route::get('teacher/grid/page', 'teacherGrid')->middleware('auth')->name('teacher/grid/page'); // page grid teacher
     Route::post('teacher/save', 'saveRecord')->middleware('auth')->name('teacher/save'); // save record
-    Route::get('teacher/edit/{id}', 'editRecord'); // view teacher record
+    Route::get('teacher/edit/{id}', 'editRecord')->middleware('auth')->name('teacher/edit');
     Route::post('teacher/update', 'updateRecordTeacher')->middleware('auth')->name('teacher/update'); // update record
     Route::post('teacher/delete', 'teacherDelete')->name('teacher/delete'); // delete record teacher
 });
 
 // ----------------------- department -----------------------------//
-// Route::controller(DepartmentController::class)->group(function () {
-//     Route::get('department/list/page', 'departmentList')->middleware('auth')->name('department/list/page'); // department/list/page
-//     Route::get('department/add/page', 'addDepartment')->middleware('auth')->name('department/add/page'); // page add department
-//     Route::get('department/edit/page/{id}', 'editDepartment')->middleware('auth')->name('department/edit/page'); // page edit department
-// });
+Route::middleware('auth')->group(function () {
+    Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.list');
+    Route::get('/departments/add', [DepartmentController::class, 'showAddForm'])->name('departments.add');
+    Route::post('/departments/store', [DepartmentController::class, 'store'])->name('departments.store');
+    Route::get('/departments/edit/{id}', [DepartmentController::class, 'showEditForm'])->name('departments.edit');
+    Route::post('/departments/update', [DepartmentController::class, 'update'])->name('departments.update');
+    Route::get('/departments/show/{id}', [DepartmentController::class, 'show'])->name('departments.show');
+    Route::delete('/departments/delete', [DepartmentController::class, 'destroy'])->name('departments.destroy'); // Nouvelle route pour la suppression
+});
+
 
 // ----------------------- partenariat -----------------------------//
 Route::controller(PartenariatController::class)->group(function () {
@@ -132,7 +137,7 @@ Route::controller(PartenariatController::class)->group(function () {
     Route::post('partenariat/save', 'savePartenaire')->middleware('auth')->name('partenariats.save'); // Enregistrer un nouveau partenariat
     Route::get('partenariat/edit/page/{id}', 'editPartenaire')->middleware('auth')->name('partenariats.edit'); // Page pour modifier un partenariat
     Route::put('partenariat/update/{id}', 'updatePartenaire')->middleware('auth')->name('partenariats.update'); // Mettre à jour un partenariat
-    Route::delete('partenariat/delete/{id}', 'deletePartenaire')->middleware('auth')->name('partenariats.delete'); // Supprimer un partenariat
+    Route::post('partenariat/delete/', 'deletePartenaire')->middleware('auth')->name('partenariats.delete'); // Supprimer un partenariat
 });
 
 

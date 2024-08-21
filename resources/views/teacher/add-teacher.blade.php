@@ -51,12 +51,32 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <!-- Department Selection -->
+                                    <div class="col-12 col-sm-4">
+                                        <div class="form-group local-forms">
+                                            <label>Département <span class="login-danger">*</span></label>
+                                            <select class="form-control select @error('department_id') is-invalid @enderror"
+                                                name="department_id">
+                                                @foreach ($departments as $department)
+                                                    <option value="{{ $department->id }}"
+                                                        {{ old('department_id') == $department->id ? 'selected' : '' }}>
+                                                        {{ $department->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('department_id')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
                                     <div class="col-12 col-sm-4">
                                         <div class="form-group local-forms">
                                             <label>Telephone <span class="login-danger">*</span></label>
                                             <input class="form-control @error('Telephone') is-invalid @enderror"
-                                                type="text" name="Telephone"
-                                                placeholder="Entrer numero telephone" value="{{ old('Telephone') }}">
+                                                type="text" name="Telephone" placeholder="Entrer numero telephone"
+                                                value="{{ old('Telephone') }}">
                                             @error('Telephone')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -81,8 +101,8 @@
                                         <div class="form-group local-forms">
                                             <label>Adresse <span class="login-danger">*</span></label>
                                             <input class="form-control @error('adresse') is-invalid @enderror"
-                                                type="text" name="adresse"
-                                                placeholder="Maninday toliara" value="{{ old('adresse') }}">
+                                                type="text" name="adresse" placeholder="Maninday toliara"
+                                                value="{{ old('adresse') }}">
                                             @error('adresse')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -106,18 +126,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-12 col-sm-4">
-                                        <div class="form-group local-forms">
-                                            <label>Département <span class="login-danger">*</span></label>
-                                            <input type="text" class="form-control @error('departement') is-invalid @enderror"
-                                                name="departement" placeholder="Entrer le département" value="{{ old('departement') }}">
-                                            @error('departement')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
+
                                     <div class="col-12">
                                         <div class="student-submit">
                                             <button type="submit" class="btn btn-primary">Ajouter</button>

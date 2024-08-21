@@ -1,155 +1,188 @@
 <?php
 
 namespace App\Http\Controllers;
-use DB;
+
+use App\Models\Department;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
-    /** index page student list */
+    /** Afficher la liste des étudiants */
     public function student()
     {
         $studentList = Student::all();
-        return view('student.student',compact('studentList'));
+
+        return view('student.student', compact('studentList'));
     }
 
-    /** index page student grid */
+    /** Afficher la grille des étudiants */
     public function studentGrid()
     {
         $studentList = Student::all();
-        return view('student.student-grid',compact('studentList'));
+        return view('student.student-grid', compact('studentList'));
     }
 
-    /** student add page */
+    /** Afficher la page d'ajout d'un étudiant */
     public function studentAdd()
     {
-        return view('student.add-student');
+        // Fetch all departments (or other relevant data)
+        $departments = Department::all();
+
+        // Return the view with departments data
+        return view('student.add-student', compact('departments'));
     }
 
-    /** student save record */
+    /** Sauvegarder un étudiant */
     public function studentSave(Request $request)
     {
         $request->validate([
-            'Nom'      => 'required|string',
-            'Prenoms'  => 'required|string',
-            'Genre'    => 'required|not_in:0',
-            'Age'      => 'required|integer',
-            'Adresse'  => 'required|string',
-            'email'    => 'required|email',
-            'Niveau'   => 'required|string',
-            'Telephone'=> 'required',
-            'upload'   => 'required|image',
+            'Nom'          => 'required|string',
+            'Prenoms'      => 'required|string',
+            'Genre'        => 'required|not_in:0',
+            'Age'          => 'required|integer',
+            'Adresse'      => 'required|string',
+            'email'        => 'required|email',
+            'Niveau'       => 'required|string',
+            'Telephone'    => 'required',
+            'upload'       => 'required|image',
+            'department_id' => 'required|exists:departments,id',
+            'matricule'    => 'required|string',
         ]);
 
         DB::beginTransaction();
         try {
-
             $upload_file = rand() . '.' . $request->upload->extension();
             $request->upload->move(storage_path('app/public/student-photos/'), $upload_file);
-            if(!empty($request->upload)) {
-                $student = new Student;
-                $student->Nom = $request->Nom;
-                $student->Prenoms = $request->Prenoms;
-                $student->Genre = $request->Genre;
-                $student->Age= $request->Age;
-                $student->Adresse = $request->Adresse;
-                $student->email = $request->email;
-                $student->Niveau = $request->Niveau;
-                $student->Telephone = $request->Telephone;
-                $student->upload = $upload_file;
-                $student->save();
 
-                Toastr::success('Ajouter avec succes :)','Succées');
-                DB::commit();
-            }
+            $student = new Student;
+            $student->Nom = $request->Nom;
+            $student->Prenoms = $request->Prenoms;
+            $student->Genre = $request->Genre;
+            $student->Age = $request->Age;
+            $student->Adresse = $request->Adresse;
+            $student->email = $request->email;
+            $student->Niveau = $request->Niveau;
+            $student->Telephone = $request->Telephone;
+            $student->upload = $upload_file;
+            $student->department_id = $request->department_id;
+            $student->matricule = $request->matricule;
+            $student->save();
 
-            return redirect()->back();
+            DB::commit();
+            Toastr::success('Ajouté avec succès :)', 'Succès');
+            return redirect()->route('student/list');
+        } catch (\Exception $e) {
 
-
-        } catch(\Exception $e) {
+            var_dump($e->getMessage());
+            exit;
             DB::rollback();
-            echo $e;return;
-            Toastr::error('Erreur,Ajouter un nouveau :)','Error');
+            Toastr::error('Erreur lors de l\'ajout :)', 'Erreur');
             return redirect()->back();
         }
     }
 
-    /** view for edit student */
+    /** Afficher la page d'édition d'un étudiant */
     public function studentEdit($id)
     {
-        $studentEdit = Student::where('id',$id)->first();
-        return view('student.edit-student',compact('studentEdit'));
+        $studentEdit = Student::findOrFail($id);
+        $departments = Department::all(); // Fetch departments for the edit view
+        return view('student.edit-student', compact('studentEdit', 'departments'));
     }
 
-    /** update record */
+    /** Mettre à jour les informations d'un étudiant */
     public function studentUpdate(Request $request)
     {
 
-        // var_dump($request->all());return;
         DB::beginTransaction();
         try {
+            $request->validate([
+                'Nom'          => 'required|string',
+                'Prenoms'      => 'required|string',
+                'Genre'        => 'required|not_in:0',
+                'Age'          => 'required|integer',
+                'Adresse'      => 'required|string',
+                'email'        => 'required|email',
+                'Niveau'       => 'required|string',
+                'Telephone'    => 'required',
+                'department_id' => 'required|exists:departments,id',
+                'matricule'    => 'required|string',
 
-            if (!empty($request->upload)) {
-                unlink(storage_path('app/public/student-photos/'.$request->image_hidden));
+                'upload'       => 'nullable|image',
+            ]);
+
+            $student = Student::findOrFail($request->id);
+
+            if ($request->hasFile('upload')) {
+                // Remove old image
+                $oldImagePath = storage_path('app/public/student-photos/' . $student->upload);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+
+                // Save new image
                 $upload_file = rand() . '.' . $request->upload->extension();
                 $request->upload->move(storage_path('app/public/student-photos/'), $upload_file);
             } else {
-                $upload_file = $request->image_hidden;
+                $upload_file = $student->upload;
             }
 
-            $updateRecord = [
-                'upload' => $upload_file,
-                'Nom'=>$request->Nom,
-                'Prenoms' => $request->Prenoms,
-                'Genre' => $request->Genre,
-                'Age'=>$request->Age,
-                'Adresse'=> $request->Adresse,
-               'email' => $request->email,
-                'Niveau'=>$request->Niveau,
-                'Telephone' => $request->Telephone
-            ];
-          
-            Student::where('id',$request->id)->update($updateRecord);
+            $student->update([
+                'upload'       => $upload_file,
+                'Nom'          => $request->Nom,
+                'Prenoms'      => $request->Prenoms,
+                'Genre'        => $request->Genre,
+                'Age'          => $request->Age,
+                'Adresse'      => $request->Adresse,
+                'email'        => $request->email,
+                'Niveau'       => $request->Niveau,
+                'Telephone'    => $request->Telephone,
+                'department_id'  => $request->department_id,
+                'matricule'    => $request->matricule,
+            ]);
 
-            Toastr::success('Modification avec succées :)','Succées');
             DB::commit();
-            return redirect()->back();
-
-        } catch(\Exception $e) {
+            Toastr::success('Modifié avec succès :)', 'Succès');
+            return redirect()->route('student/list');
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+            exit;
             DB::rollback();
-            // echo $e;return;
-            Toastr::error('fail, update student  :)','Error');
+            Toastr::error('Erreur lors de la mise à jour :)', 'Erreur');
             return redirect()->back();
         }
     }
 
-    /** student delete */
+    /** Supprimer un étudiant */
     public function studentDelete(Request $request)
     {
         DB::beginTransaction();
         try {
+            $student = Student::findOrFail($request->id);
 
-            if (!empty($request->id)) {
-                Student::destroy($request->id);
-                unlink(storage_path('app/public/student-photos/'.$request->avatar));
-                DB::commit();
-                Toastr::success('Student deleted successfully :)','Succées');
-                return redirect()->back();
+            // Remove student image
+            $imagePath = storage_path('app/public/student-photos/' . $student->upload);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
             }
 
-        } catch(\Exception $e) {
+            $student->delete();
+            DB::commit();
+            Toastr::success('Étudiant supprimé avec succès :)', 'Succès');
+            return redirect()->route('student/list');
+        } catch (\Exception $e) {
             DB::rollback();
-            Toastr::error('Student deleted fail :)','Error');
+            Toastr::error('Erreur lors de la suppression :)', 'Erreur');
             return redirect()->back();
         }
     }
 
-    /** student profile page */
+    /** Afficher le profil d'un étudiant */
     public function studentProfile($id)
     {
-        $studentProfile = Student::where('id',$id)->first();
-        return view('student.student-profile',compact('studentProfile'));
+        $studentProfile = Student::findOrFail($id);
+        return view('student.student-profile', compact('studentProfile'));
     }
 }

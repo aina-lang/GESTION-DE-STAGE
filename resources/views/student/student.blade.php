@@ -17,30 +17,6 @@
             </div>
             {{-- message --}}
             {!! Toastr::message() !!}
-            {{-- <div class="student-group-form">
-                <div class="row">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Rechercher par ID ...">
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Rechercher par téléphone ...">
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Rechercher par nom ...">
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="search-student-btn">
-                            <button type="button" class="btn btn-primary">Rechercher</button>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card card-table comman-shadow">
@@ -51,14 +27,8 @@
                                         <h3 class="page-title">Étudiants</h3>
                                     </div>
                                     <div class="col-auto text-end float-end ms-auto download-grp">
-                                        {{-- <a href="{{ route('student/list') }}" class="btn btn-outline-gray me-2 active"><i
-                                                class="feather-list"></i></a> --}}
-                                        {{-- <a href="{{ route('student/grid') }}" class="btn btn-outline-gray me-2"><i
-                                                class="feather-grid"></i></a> --}}
-                                        {{-- <a href="#" class="btn btn-outline-primary me-2"><i
-                                                class="fas fa-download"></i> Télécharger</a> --}}
                                         <a href="{{ route('student/add/page') }}" class="btn btn-primary"><i
-                                                class="fas fa-plus"></i></a>
+                                                class="fas fa-plus"></i>Ajouter</a>
                                     </div>
                                 </div>
                             </div>
@@ -69,7 +39,6 @@
                                     <thead class="student-thread">
                                         <tr>
                                             <th>Profil</th>
-                                            {{-- <th>ID</th> --}}
                                             <th>Nom</th>
                                             <th>Prénoms</th>
                                             <th>Genre</th>
@@ -78,6 +47,8 @@
                                             <th>E-Mail</th>
                                             <th>Niveau</th>
                                             <th>Téléphone</th>
+                                            <th>Matricule</th>
+                                            <th>Département</th>
                                             <th class="text-end">Action</th>
                                         </tr>
                                     </thead>
@@ -92,7 +63,6 @@
                                                             alt="{{ $list->Nom }}">
                                                     </a>
                                                 </td>
-                                                {{-- <td>ETD{{ ++$key }}</td> --}}
                                                 <td>{{ $list->Nom }}</td>
                                                 <td>{{ $list->Prenoms }}</td>
                                                 <td>{{ $list->Genre }}</td>
@@ -101,6 +71,8 @@
                                                 <td>{{ $list->email }}</td>
                                                 <td>{{ $list->Niveau }}</td>
                                                 <td>{{ $list->Telephone }}</td>
+                                                <td>{{ $list->matricule }}</td>
+                                                <td>{{ $list->department->name }}</td>
                                                 <td class="text-end">
                                                     <div class="actions">
                                                         <a href="{{ url('student/edit/' . $list->id) }}"

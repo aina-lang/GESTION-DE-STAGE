@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('adresse')->nullable();
             $table->string('grade')->nullable();
-            $table->string('departement')->nullable();
+            $table->foreignId('department_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

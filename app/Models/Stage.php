@@ -26,4 +26,9 @@ class Stage extends Model
     {
         return $this->belongsTo(Partenaire::class, 'partenaire_id');
     }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

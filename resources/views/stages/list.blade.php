@@ -29,7 +29,7 @@
                                     </div>
                                     <div class="col-auto text-end ms-auto download-grp">
                                         <a href="{{ route('stage.download') }}" class="btn btn-outline-primary me-2"><i class="fas fa-download"></i> Télécharger Liste</a>
-                                        <a href="{{ route('stage.add') }}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                                        <a href="{{ route('stage.add') }}" class="btn btn-primary"><i class="fas fa-plus"></i>Ajouter</a>
                                     </div>
                                 </div>
                             </div>
@@ -111,9 +111,9 @@
     <script>
         $(document).on('click', '.stage_delete', function() {
             var stageId = $(this).data('id');
-            var formAction = "{{ route('stage.delete') }}"; // URL sans paramètre
+            var formAction = "{{ route('stage.delete') }}"; 
             $('#deleteForm').attr('action', formAction);
-            $('#stageId').val(stageId); // Assurez-vous que ce champ existe dans le formulaire
+            $('#stageId').val(stageId); 
         });
     </script>
 @endsection

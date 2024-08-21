@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class PartenariatController extends Controller
             'telephone'  => 'required|string',
             'adresse'    => 'required|string',
             'secteur'    => 'required|string',
-           
+
         ]);
 
         try {
@@ -39,14 +40,15 @@ class PartenariatController extends Controller
                 'telephone'  => $request->telephone,
                 'adresse'    => $request->adresse,
                 'secteur'    => $request->secteur,
-            
+
             ]);
 
             Toastr::success('Partenaire ajouté avec succès :)', 'Succès');
             return redirect()->back();
         } catch (\Exception $e) {
             \Log::info($e);
-            echo $e;return;
+            echo $e;
+            return;
             Toastr::error('Erreur lors de l\'ajout du partenariat :)', 'Erreur');
             return redirect()->back();
         }
@@ -68,7 +70,7 @@ class PartenariatController extends Controller
             'telephone'  => 'required|string',
             'adresse'    => 'required|string',
             'secteur'    => 'required|string',
-    
+
         ]);
 
         try {
@@ -79,7 +81,7 @@ class PartenariatController extends Controller
                 'telephone'  => $request->telephone,
                 'adresse'    => $request->adresse,
                 'secteur'    => $request->secteur,
-               
+
             ]);
 
             Toastr::success('Partenaire mis à jour avec succès :)', 'Succès');
@@ -92,10 +94,10 @@ class PartenariatController extends Controller
     }
 
     /** Supprimer un partenariat */
-    public function deletePartenaire(Request $request, $id)
+    public function deletePartenaire(Request $request)
     {
         try {
-            Partenaire::destroy($id);
+            Partenaire::destroy($request->id);
             Toastr::success('Partenaire supprimé avec succès :)', 'Succès');
             return redirect()->back();
         } catch (\Exception $e) {

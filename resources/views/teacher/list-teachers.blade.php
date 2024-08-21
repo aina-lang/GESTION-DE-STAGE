@@ -1,4 +1,5 @@
 @extends('layouts.master')
+
 @section('content')
     {{-- message --}}
     {!! Toastr::message() !!}
@@ -54,7 +55,7 @@
                                         {{-- <a href="teachers.html" class="btn btn-outline-gray me-2 active"><i class="feather-list"></i></a>
                                         <a href="{{ route('teacher/grid/page') }}" class="btn btn-outline-gray me-2"><i class="feather-grid"></i></a> --}}
                                         {{-- <a href="#" class="btn btn-outline-primary me-2"><i class="fas fa-download"></i> Télécharger</a> --}}
-                                        <a href="{{ route('teacher/add/page') }}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                                        <a href="{{ route('teacher/add/page') }}" class="btn btn-primary"><i class="fas fa-plus"></i>Ajouter</a>
                                     </div>
                                 </div>
                             </div>
@@ -64,6 +65,7 @@
                                     <thead>
                                         <tr>
                                             <th>Nom et prénoms</th>
+                                            <th>Département</th>
                                             <th>Grade</th>
                                             <th>Téléphone</th>
                                             <th>Email</th>
@@ -72,19 +74,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($listTeacher as $list)
+                                        @foreach ($listTeacher as $teacher)
                                             <tr>
-                                                <td>{{ $list->Nom }} {{ $list->Prenoms }}</td>
-                                                <td>{{ $list->grade }}</td>
-                                                <td>{{ $list->Telephone }}</td>
-                                                <td>{{ $list->email }}</td>
-                                                <td>{{ $list->adresse }}</td>
+                                                <td>{{ $teacher->Nom }} {{ $teacher->Prenoms }}</td>
+                                                <td>{{ $teacher->department->name }}</td>
+                                                <td>{{ $teacher->grade }}</td>
+                                                <td>{{ $teacher->Telephone }}</td>
+                                                <td>{{ $teacher->email }}</td>
+                                                <td>{{ $teacher->adresse }}</td>
                                                 <td class="text-end">
                                                     <div class="actions">
-                                                        <a href="{{ url('teacher/edit/' . $list->id) }}" class="btn btn-sm bg-danger-light">
+                                                        <a href="{{ url('teacher/edit/' . $teacher->id) }}" class="btn btn-sm bg-danger-light">
                                                             <i class="feather-edit"></i>
                                                         </a>
-                                                        <a class="btn btn-sm bg-danger-light teacher_delete" data-bs-toggle="modal" data-bs-target="#teacherDelete">
+                                                        <a href="#" class="btn btn-sm bg-danger-light teacher_delete" data-bs-toggle="modal" data-bs-target="#teacherDelete" data-id="{{ $teacher->id }}">
                                                             <i class="feather-trash-2 me-1"></i>
                                                         </a>
                                                     </div>
@@ -132,8 +135,8 @@
     {{-- JS suppression --}}
     <script>
         $(document).on('click', '.teacher_delete', function() {
-            var _this = $(this).closest('tr');
-            $('.e_id').val(_this.find('.id').text());
+            var id = $(this).data('id');
+            $('.e_id').val(id);
         });
     </script>
 @endsection

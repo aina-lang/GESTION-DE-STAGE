@@ -18,9 +18,17 @@ class Student extends Model
         'Niveau',
         'Telephone',
         'upload',
+        'matricule',
+        'department_id', 
     ];
+
     public function stage()
     {
         return $this->hasOne(Stage::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }

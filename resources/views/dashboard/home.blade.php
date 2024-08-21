@@ -88,45 +88,69 @@
                 </div>
             </div>
 
-            {{-- <div class="card flex-fill comman-shadow">
-                <div class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col-6">
-                            <h5 class="card-title">Vue d'ensemble des Stagiaires et Étudiants</h5>
-                        </div>
+            {{-- <div class="content container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <canvas id="departmentPieChart"></canvas>
                     </div>
-                </div>
-                <div class="card-body">
-                    <canvas id="activity-chart"></canvas>
+                    <div class="col-md-6">
+                        <canvas id="partnerBarChart"></canvas>
+                    </div>
                 </div>
             </div> --}}
 
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ URL::to('assets/plugins/chartjs/chart.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var ctx = document.getElementById('activity-chart').getContext('2d');
+            var departmentCtx = document.getElementById('departmentPieChart').getContext('2d');
+            var partnerCtx = document.getElementById('partnerBarChart').getContext('2d');
 
-            var chart = new Chart(ctx, {
+            // Préparer les données pour le graphique par département
+            var departmentLabels = {!! json_encode($stagesByDepartment->keys()->toArray()) !!};
+            var departmentData = {!! json_encode($stagesByDepartment->map->count()->values()->toArray()) !!};
+
+            console.log({!! json_encode($stagesByDepartment) !!});
+            var departmentChart = new Chart(departmentCtx, {
+                type: 'pie',
+                data: {
+                    labels: departmentLabels,
+                    datasets: [{
+                        data: departmentData,
+                        backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#F1C40F'],
+                        borderColor: ['#C70039', '#28B463', '#1F77B4', '#F39C12'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                    }
+                }
+            });
+
+            // Préparer les données pour le graphique en barres par partenaire
+            var partnerLabels = {!! json_encode($stagesByPartner->keys()->toArray()) !!};
+            var partnerData = {!! json_encode($stagesByPartner->map->count()->values()->toArray()) !!};
+
+            var partnerChart = new Chart(partnerCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Étudiants', 'Partenaires', 'Stages', 'Superviseurs'],
+                    labels: partnerLabels,
                     datasets: [{
-                        label: 'Nombre',
-                        data: [
-                            {{ $studentCount }},
-                            {{ $partnerCount }},
-                            {{ $stageCount }},
-                            {{ $supervisorCount }}
-                        ],
+                        label: 'Nombre de stages',
+                        data: partnerData,
                         backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#F1C40F'],
                         borderColor: ['#C70039', '#28B463', '#1F77B4', '#F39C12'],
                         borderWidth: 1
                     }]
                 },
                 options: {
+                    responsive: true,
                     scales: {
                         y: {
                             beginAtZero: true

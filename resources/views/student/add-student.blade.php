@@ -63,7 +63,8 @@
                                             <select class="form-control select  @error('Genre') is-invalid @enderror"
                                                 name="Genre">
                                                 {{-- <option  disabled>Choisir le genre</option> --}}
-                                                <option selected value="Féminin" {{ old('Genre') == 'Féminin' ? 'selected' : '' }}>
+                                                <option selected value="Féminin"
+                                                    {{ old('Genre') == 'Féminin' ? 'selected' : '' }}>
                                                     Féminin</option>
                                                 <option value="Masculin" {{ old('Genre') == 'Masculin' ? 'selected' : '' }}>
                                                     Masculin</option>
@@ -115,13 +116,37 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <!-- Department Selection -->
+                                    <div class="col-12 col-sm-4">
+                                        <div class="form-group local-forms">
+                                            <label>Département <span class="login-danger">*</span></label>
+                                            <select class="form-control select @error('department_id') is-invalid @enderror"
+                                                name="department_id">
+                                                @foreach ($departments as $department)
+                                                    <option value="{{ $department->id }}"
+                                                        {{ old('department_id') == $department->id ? 'selected' : '' }}>
+                                                        {{ $department->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('department_id')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                
+
                                     <div class="col-12 col-sm-4">
                                         <div class="form-group local-forms">
                                             <label>Niveau <span class="login-danger">*</span></label>
                                             <select class="form-control select @error('Niveau') is-invalid @enderror"
                                                 name="Niveau">
                                                 {{-- <option  disabled>Choisir le niveau</option> --}}
-                                                <option selected value="L1" {{ old('Niveau') == 'L1' ? 'selected' : '' }}>L1
+                                                <option selected value="L1"
+                                                    {{ old('Niveau') == 'L1' ? 'selected' : '' }}>L1
                                                 </option>
                                                 <option value="L2" {{ old('Niveau') == 'L2' ? 'selected' : '' }}>L2
                                                 </option>
@@ -139,11 +164,27 @@
                                             @enderror
                                         </div>
                                     </div>
+                                        <!-- Matricule -->
+                                        <div class="col-12 col-sm-4">
+                                            <div class="form-group local-forms">
+                                                <label>Matricule <span class="login-danger">*</span></label>
+                                                <input type="text"
+                                                    class="form-control @error('matricule') is-invalid @enderror"
+                                                    name="matricule" placeholder="Entrer le matricule"
+                                                    value="{{ old('matricule') }}">
+                                                @error('matricule')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
                                     <div class="col-12 col-sm-4">
                                         <div class="form-group local-forms">
                                             <label>Téléphone</label>
                                             <input class="form-control @error('Telephone') is-invalid @enderror"
-                                                type="text" name="Telephone" placeholder="Entrer le numéro de téléphone"
+                                                type="text" name="Telephone"
+                                                placeholder="Entrer le numéro de téléphone"
                                                 value="{{ old('Telephone') }}">
                                             @error('Telephone')
                                                 <span class="invalid-feedback" role="alert">
@@ -156,7 +197,8 @@
                                         <div class="form-group students-up-files">
                                             <label>Insérer la Photo (150px X 150px)</label>
                                             <div class="uplod">
-                                                <label class="file-upload image-upbtn mb-0 @error('upload') is-invalid @enderror">
+                                                <label
+                                                    class="file-upload image-upbtn mb-0 @error('upload') is-invalid @enderror">
                                                     Choisir le fichier <input type="file" name="upload"
                                                         onchange="previewImage(event)">
                                                 </label>

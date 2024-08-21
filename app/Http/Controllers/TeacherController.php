@@ -3,19 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DB;
-use Hash;
-use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Teacher;
+use Illuminate\Support\Facades\DB;
 use Brian2694\Toastr\Facades\Toastr;
+use App\Models\Teacher;
+use App\Models\Department;
 
 class TeacherController extends Controller
 {
     /** Afficher la page d'ajout d'encadreur */
     public function teacherAdd()
     {
-        return view('teacher.add-teacher');
+        $departments = Department::all(); 
+        return view('teacher.add-teacher', compact('departments'));
+    }
+
+    /** Afficher la page d'édition d'encadreur */
+    public function editRecord($id)
+    {
+        $teacher = Teacher::findOrFail($id);
+        $departments = Department::all(); 
+        return view('teacher.edit-teacher', compact('teacher', 'departments'));
     }
 
     /** Afficher la liste des encadreurs */
@@ -36,13 +43,13 @@ class TeacherController extends Controller
     public function saveRecord(Request $request)
     {
         $request->validate([
-            'Nom'       => 'required|string',
-            'Prenoms'   => 'required|string',
-            'Telephone' => 'required',
-            'email'     => 'required|email',
-            'adresse'   => 'required|string',
-            'grade'     => 'required|string',
-            'departement' => 'required|string', 
+            'Nom'          => 'required|string',
+            'Prenoms'      => 'required|string',
+            'Telephone'    => 'required',
+            'email'        => 'required|email',
+            'adresse'      => 'required|string',
+            'grade'        => 'required|string',
+            'department_id'=> 'required|exists:departments,id', 
         ]);
 
         try {
@@ -53,48 +60,48 @@ class TeacherController extends Controller
             $saveRecord->Telephone = $request->Telephone;
             $saveRecord->adresse = $request->adresse;
             $saveRecord->grade = $request->grade;
-            $saveRecord->departement = $request->departement; 
+            $saveRecord->department_id = $request->department_id; 
             $saveRecord->save();
 
             Toastr::success('Ajout avec succès :)', 'Succès');
             return redirect()->back();
         } catch (\Exception $e) {
-            \Log::info($e);
-            DB::rollback();
+            \Log::error($e);
             Toastr::error('Erreur d\'ajout :)', 'Erreur');
             return redirect()->back();
         }
     }
 
     /** Modifier un encadreur */
-    public function editRecord($id)
-    {
-        $teacher = Teacher::where('id', $id)->first();
-        return view('teacher.edit-teacher', compact('teacher'));
-    }
-
-    /** Mettre à jour un encadreur */
     public function updateRecordTeacher(Request $request)
     {
-        DB::beginTransaction();
+        $request->validate([
+            'Nom'          => 'required|string',
+            'Prenoms'      => 'required|string',
+            'Telephone'    => 'required',
+            'email'        => 'required|email',
+            'adresse'      => 'required|string',
+            'grade'        => 'required|string',
+            'department_id'=> 'required|exists:departments,id',
+        ]);
+
         try {
             $updateRecord = [
-                'Nom'       => $request->Nom,
-                'Prenoms'   => $request->Prenoms,
-                'Telephone' => $request->Telephone,
-                'email'     => $request->email,
-                'adresse'   => $request->adresse, 
-                'grade'     => $request->grade,
-                'departement' => $request->departement, 
+                'Nom'          => $request->Nom,
+                'Prenoms'      => $request->Prenoms,
+                'Telephone'    => $request->Telephone,
+                'email'        => $request->email,
+                'adresse'      => $request->adresse,
+                'grade'        => $request->grade,
+                'department_id'=> $request->department_id, 
             ];
 
             Teacher::where('id', $request->id)->update($updateRecord);
 
             Toastr::success('Modification avec succès :)', 'Succès');
-            DB::commit();
             return redirect()->back();
         } catch (\Exception $e) {
-            DB::rollback();
+            \Log::error($e);
             Toastr::error('Erreur de modification :)', 'Erreur');
             return redirect()->back();
         }
@@ -103,14 +110,12 @@ class TeacherController extends Controller
     /** Supprimer un encadreur */
     public function teacherDelete(Request $request)
     {
-        DB::beginTransaction();
         try {
             Teacher::destroy($request->id);
-            DB::commit();
             Toastr::success('Suppression avec succès :)', 'Succès');
             return redirect()->back();
         } catch (\Exception $e) {
-            DB::rollback();
+            \Log::error($e);
             Toastr::error('Erreur de suppression :)', 'Erreur');
             return redirect()->back();
         }
