@@ -29,7 +29,7 @@
                                     </div>
                                     <div class="col-auto text-end ms-auto download-grp">
                                         <a href="{{ route('stage.download') }}" class="btn btn-outline-primary me-2"><i class="fas fa-download"></i> Télécharger Liste</a>
-                                        <a href="{{ route('stage.add') }}" class="btn btn-primary"><i class="fas fa-plus"></i>Ajouter</a>
+                                        <a href="{{ route('stage.add') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Ajouter</a>
                                     </div>
                                 </div>
                             </div>
@@ -43,6 +43,7 @@
                                             <th>Thème</th>
                                             <th>Date de début</th>
                                             <th>Date de fin</th>
+                                            <th>Encadrant</th> <!-- Nouvelle colonne -->
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -54,6 +55,7 @@
                                                 <td>{{ $stage->theme }}</td>
                                                 <td>{{ $stage->start_date }}</td>
                                                 <td>{{ $stage->end_date }}</td>
+                                                <td>{{ $stage->teacher->Nom }} {{ $stage->teacher->Prenoms }}</td> <!-- Affichage de l'encadrant -->
                                                 <td class="text-end">
                                                     <div class="actions">
                                                         <a href="{{ route('stage.edit', $stage->id) }}" class="btn btn-sm bg-warning-light me-2">

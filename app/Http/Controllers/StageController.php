@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Partenaire;
-use Illuminate\Http\Request;
 use App\Models\Stage;
 use App\Models\Student;
+use App\Models\Teacher; // Ajout du modèle Teacher
 use Barryvdh\DomPDF\Facade\Pdf;
 use Brian2694\Toastr\Toastr as ToastrToastr;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Toastr;
@@ -37,21 +38,23 @@ class StageController extends Controller
         // Récupérer la liste des partenaires
         $partenaires = Partenaire::all();
 
-        // Retourner la vue avec les données des étudiants et des partenaires
-        return view('stages.add', compact('etudiants', 'partenaires'));
+        // Récupérer la liste des enseignants
+        $enseignants = Teacher::all(); // Nouvelle ligne pour les enseignants
+
+        // Retourner la vue avec les données des étudiants, des partenaires, et des enseignants
+        return view('stages.add', compact('etudiants', 'partenaires', 'enseignants'));
     }
 
     // Store a newly created resource in storage.
     public function store(Request $request)
     {
-
-
         $validator = Validator::make($request->all(), [
             'theme' => 'required|string|max:255',
             'partenaire_id' => 'required|exists:partenaires,id',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
             'student_id' => 'required|exists:students,id',
+            'teacher_id' => 'required|exists:teachers,id', // Validation ajoutée pour teacher_id
         ]);
 
         if ($validator->fails()) {
@@ -69,6 +72,7 @@ class StageController extends Controller
         $stage->start_date = $startDate;
         $stage->end_date = $endDate;
         $stage->student_id = $request->input('student_id');
+        $stage->teacher_id = $request->input('teacher_id'); // Ajout du teacher_id
         $stage->save();
 
         // Envoi d'un message de succès
@@ -82,15 +86,18 @@ class StageController extends Controller
         $stage = Stage::findOrFail($id);
         $etudiants = Student::all();
         $partenaires = Partenaire::all();
-        return view('stages.edit', compact('stage', 'etudiants', 'partenaires'));
+        $enseignants = Teacher::all();
+
+        $startDate = \DateTime::createFromFormat('Y-m-d', $stage->start_date);
+        $endDate = \DateTime::createFromFormat('Y-m-d', $stage->end_date);
+
+        // Retourner la vue avec les données du stage, des étudiants, des partenaires et des enseignants
+        return view('stages.edit', compact('stage', 'etudiants', 'partenaires', 'enseignants', 'startDate', 'endDate'));
     }
 
     // Update the specified resource in storage.
     public function update(Request $request, $id)
     {
-        // var_dump($request->all());
-        // exit;
-
         // Validation des données du formulaire
         $validator = Validator::make($request->all(), [
             'theme' => 'required|string|max:255',
@@ -98,6 +105,7 @@ class StageController extends Controller
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
             'student_id' => 'required|exists:students,id',
+            'teacher_id' => 'required|exists:teachers,id', // Validation ajoutée pour teacher_id
         ]);
 
         if ($validator->fails()) {
@@ -117,13 +125,13 @@ class StageController extends Controller
         $stage->start_date = $startDate;
         $stage->end_date = $endDate;
         $stage->student_id = $request->input('student_id');
+        $stage->teacher_id = $request->input('teacher_id'); // Ajout du teacher_id
         $stage->save();
 
         // Envoi d'un message de succès
         Toastr::success('Stage mis à jour avec succès!', 'Succès');
         return redirect()->route('stage.list');
     }
-
 
     // Remove the specified resource from storage.
     public function destroy(Request $request)
@@ -144,22 +152,20 @@ class StageController extends Controller
         return redirect()->route('stage.list');
     }
 
-
     public function generatePdf($stageId)
     {
         try {
-            // Fetch the stage with related student and partenaire
-            $stage = Stage::with('student', 'partenaire')->findOrFail($stageId);
+            // Fetch the stage with related student, partenaire, and teacher
+            $stage = Stage::with('student', 'partenaire', 'teacher')->findOrFail($stageId);
 
             // Generate the PDF
             $pdf = Pdf::loadView('pdf.stage', compact('stage'))
-            ->setOption('encoding', 'UTF-8');
+                ->setOption('encoding', 'UTF-8');
 
             // Return the generated PDF for download
             return $pdf->download('stage_info.pdf');
         } catch (\Exception $e) {
             // Handle the exception and log the error
-            var_dump($e->getMessage());exit;
             \Log::error('Error generating PDF: ' . $e->getMessage());
 
             // Optionally, you can return a response to the user
@@ -170,12 +176,12 @@ class StageController extends Controller
     public function downloadPdf()
     {
         try {
-            // Fetch all stages with related student and partenaire
-            $stages = Stage::with('student', 'partenaire')->get();
+            // Fetch all stages with related student, partenaire, and teacher
+            $stages = Stage::with('student', 'partenaire', 'teacher')->get();
 
             // Generate the PDF
-            $pdf =Pdf::loadView('pdf.stage_list', compact('stages'))
-            ->setOption('encoding', 'UTF-8');
+            $pdf = Pdf::loadView('pdf.stage_list', compact('stages'))
+                ->setOption('encoding', 'UTF-8');
 
             // Return the generated PDF for download
             return $pdf->download('stages_list.pdf');

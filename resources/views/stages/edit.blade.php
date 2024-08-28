@@ -33,8 +33,8 @@
                                         <div class="form-group local-forms">
                                             <label>Thème du Stage <span class="login-danger">*</span></label>
                                             <input type="text" class="form-control @error('theme') is-invalid @enderror"
-                                                name="theme" placeholder="Thème du Stage" value="{{ old('theme', $stage->theme) }}"
-                                                required>
+                                                name="theme" placeholder="Thème du Stage"
+                                                value="{{ old('theme', $stage->theme) }}" required>
                                             @error('theme')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -64,7 +64,8 @@
                                             <input
                                                 class="form-control datetimepicker @error('start_date') is-invalid @enderror"
                                                 type="text" name="start_date" placeholder="JJ-MM-AAAA"
-                                                value="{{ old('start_date', $stage->start_date) }}" required>
+                                                value="{{ old('start_date', $startDate ? $startDate->format('d-m-Y') : '') }}"
+                                                required>
                                             @error('start_date')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -76,7 +77,8 @@
                                             <input
                                                 class="form-control datetimepicker @error('end_date') is-invalid @enderror"
                                                 type="text" name="end_date" placeholder="JJ-MM-AAAA"
-                                                value="{{ old('end_date', $stage->end_date) }}" required>
+                                                value="{{ old('end_date', $endDate ? $endDate->format('d-m-Y') : '') }}"
+                                                required>
                                             @error('end_date')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -95,6 +97,23 @@
                                                 @endforeach
                                             </select>
                                             @error('student_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-4">
+                                        <div class="form-group local-forms">
+                                            <label>Enseignant <span class="login-danger">*</span></label>
+                                            <select class="form-control select2 @error('teacher_id') is-invalid @enderror"
+                                                name="teacher_id" required>
+                                                <option value="">Sélectionner un enseignant</option>
+                                                @foreach ($enseignants as $teacher)
+                                                    <option value="{{ $teacher->id }}"
+                                                        {{ old('teacher_id', $stage->teacher_id) == $teacher->id ? 'selected' : '' }}>
+                                                        {{ $teacher->Nom }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('teacher_id')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>

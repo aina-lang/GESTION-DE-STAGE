@@ -124,7 +124,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/departments/add', [DepartmentController::class, 'showAddForm'])->name('departments.add');
     Route::post('/departments/store', [DepartmentController::class, 'store'])->name('departments.store');
     Route::get('/departments/edit/{id}', [DepartmentController::class, 'showEditForm'])->name('departments.edit');
-    Route::post('/departments/update', [DepartmentController::class, 'update'])->name('departments.update');
+    Route::post('/departments/update{id}', [DepartmentController::class, 'update'])->name('departments.update');
     Route::get('/departments/show/{id}', [DepartmentController::class, 'show'])->name('departments.show');
     Route::delete('/departments/delete', [DepartmentController::class, 'destroy'])->name('departments.destroy'); // Nouvelle route pour la suppression
 });

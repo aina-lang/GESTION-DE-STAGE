@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Information du Stage</title>
@@ -7,21 +8,26 @@
         body {
             font-family: Arial, sans-serif;
         }
+
         .container {
             width: 80%;
             margin: auto;
         }
+
         h1 {
             text-align: center;
         }
+
         .section {
             margin-bottom: 20px;
         }
+
         .section h2 {
             background-color: #f4f4f4;
             padding: 10px;
             border-radius: 5px;
         }
+
         .info {
             padding: 10px;
             border: 1px solid #ddd;
@@ -29,10 +35,11 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Information du Stage</h1>
-        
+
         <div class="section">
             <h2>Informations du Stage</h2>
             <div class="info">
@@ -75,6 +82,18 @@
                 @endif
             </div>
         </div>
+
+        <div class="section">
+            <h2>Informations de l'Encadrant</h2>
+            <div class="info">
+                <p><strong>Nom :</strong> {{ $stage->teacher->Nom }}</p>
+                <p><strong>Prénom(s) :</strong> {{ $stage->teacher->Prenoms }}</p>
+                <p><strong>Email:</strong> {{ $stage->teacher->email }}</p>
+                <p><strong>Téléphone:</strong> {{ $stage->teacher->Telephone }}</p>
+                <p><strong>Département :</strong> {{ $stage->teacher->department->name?? 'Non renseigné' }}</p>
+            </div>
+        </div>
     </div>
 </body>
+
 </html>

@@ -16,11 +16,16 @@ class Teacher extends Model
         'Telephone',
         'email',
         'grade',
-        'department_id', 
+        'department_id',
     ];
 
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function stages()
+    {
+        return $this->hasMany(Stage::class, 'teacher_id');
     }
 }

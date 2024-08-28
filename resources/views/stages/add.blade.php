@@ -110,6 +110,23 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-12 col-sm-4">
+                                        <div class="form-group local-forms">
+                                            <label>Enseignant <span class="login-danger">*</span></label>
+                                            <select class="form-control select2 @error('teacher_id') is-invalid @enderror"
+                                                name="teacher_id" required>
+                                                <option value="">Sélectionner un enseignant</option>
+                                                @foreach ( $enseignants as $teacher)
+                                                    <option value="{{ $teacher->id }}"
+                                                        {{ old('teacher_id') == $teacher->id ? 'selected' : '' }}>
+                                                        {{ $teacher->Nom }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('teacher_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                     <div class="col-12">
                                         <div class="student-submit">
                                             <button type="submit" class="btn btn-primary">Soumettre</button>

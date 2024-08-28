@@ -12,6 +12,7 @@ class Stage extends Model
     protected $fillable = [
         'student_id',
         'partenaire_id',
+        'teacher_id',
         'theme',
         'start_date',
         'end_date',
@@ -30,5 +31,10 @@ class Stage extends Model
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class, 'teacher_id');
     }
 }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained()->onDelete('cascade');
             $table->foreignId('partenaire_id')->constrained()->onDelete('cascade');
+            $table->foreignId('teacher_id')->constrained()->onDelete('cascade');
             $table->string('theme')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();

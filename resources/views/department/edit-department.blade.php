@@ -28,7 +28,7 @@
                         <div class="card-body">
                             <form action="{{ route('departments.update', $department->id) }}" method="POST">
                                 @csrf
-                                @method('PUT') {{-- Méthode PUT pour l'update --}}
+                                @method('POST') 
                                 <div class="row">
                                     <div class="col-12">
                                         <h5 class="form-title">Informations Département</h5>
